@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktywny Komiks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        nav {
+            background-color: #34495e;
+            padding: 0.5rem 0;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .comic-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .comic-frame {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .comic-image {
+            max-width: 100%;
+            max-height: 400px;
+            height: auto;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .comic-text {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .nav-button:hover {
+            background-color: #2980b9;
+        }
+
+        .nav-button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            nav ul li {
+                margin: 0.3rem 0;
+            }
+
+            .comic-frame {
+                min-height: 300px;
+            }
+        }
+
+        /* Animacje dla efektów komiksowych */
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(1.5); }
+            100% { opacity: 0; transform: scale(3); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Interaktywny Komiks</div>
+        <p>Przeżyj przygodę razem z nami!</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#">Strona główna</a></li>
+            <li><a href="#">O komiksie</a></li>
+            <li><a href="#">Twórcy</a></li>
+            <li><a href="#">Kontakt</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="comic-container">
+            <h1>Mój Świetny Komiks</h1>
+            <p>Kliknij na postacie, aby zobaczyć efekty!</p>
+            
+            <div class="comic-frame" id="comicFrame">
+                <img src="obraz1.png" class="comic-image" id="comicImage">
+                <p class="comic-text" id="comicText">Strona 1: Początek przygody!</p>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-button" id="prevButton" disabled>Poprzednia</button>
+                <button class="nav-button" id="nextButton">Następna</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Interaktywny Komiks. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+    <script>
+        // Dane komiksu
+        const comicPages = [
+            {
+                image: "obraz1.png",
+                text: "Strona 1: Początek niesamowitej przygody! Kliknij na postacie, aby zobaczyć efekty."
+            },
+            {
+                image: "obraz2.png",
+                text: "Strona 2: Akcja się rozkręca! Co się teraz wydarzy?"
+            }
+        ];
+
+        // Śmieszne dźwięki komiksowe
+        const comicSounds = ["POW!", "BAM!", "BOOM!", "ZAP!", "SPLAT!", "WHACK!", "KAPOW!", "ZOINK!", "BONK!", "CRASH!"];
+        
+        // Elementy DOM
+        const comicImage = document.getElementById("comicImage");
+        const comicText = document.getElementById("comicText");
+        const prevButton = document.getElementById("prevButton");
+        const nextButton = document.getElementById("nextButton");
+        
+        let currentPage = 0;
+
+        // Ładowanie strony komiksu
+        function loadPage(pageIndex) {
+            comicImage.src = comicPages[pageIndex].image;
+            comicText.textContent = comicPages[pageIndex].text;
+            
+            // Aktualizacja przycisków nawigacji
+            prevButton.disabled = pageIndex === 0;
+            nextButton.disabled = pageIndex === comicPages.length - 1;
+        }
+
+        // Generowanie losowego dźwięku komiksowego
+        function generateComicSound() {
+            return comicSounds[Math.floor(Math.random() * comicSounds.length)];
+        }
+
+        // Efekt uderzenia
+        function addPunchEffect() {
+            const sound = generateComicSound();
+            const soundElement = document.createElement("div");
+            soundElement.textContent = sound;
+            soundElement.style.position = "absolute";
+            soundElement.style.fontSize = "40px";
+            soundElement.style.fontWeight = "bold";
+            soundElement.style.color = "red";
+            soundElement.style.animation = "fadeOut 1s forwards";
+            
+            // Losowa pozycja obok obrazka
+            const x = Math.random() * 100 - 20;
+            const y = Math.random() * 100 - 50;
+            soundElement.style.left = `${x}px`;
+            soundElement.style.top = `${y}px`;
+            
+            comicImage.parentNode.style.position = "relative";
+            comicImage.parentNode.appendChild(soundElement);
+            
+            // Animacja drżenia obrazka
+            comicImage.style.animation = "shake 0.3s";
+            setTimeout(() => {
+                comicImage.style.animation = "";
+            }, 300);
+            
+            // Usuń dźwięk po animacji
+            setTimeout(() => {
+                soundElement.remove();
+            }, 1000);
+        }
+
+        // Event listeners
+        comicImage.addEventListener("mouseenter", () => {
+            const sound = generateComicSound();
+            console.log(sound); // Możesz też dodać odtwarzanie dźwięku
+        });
+
+        comicImage.addEventListener("click", addPunchEffect);
+
+        prevButton.addEventListener("click", () => {
+            if (currentPage > 0) {
+                currentPage--;
+                loadPage(currentPage);
+            }
+        });
+
+        nextButton.addEventListener("click", () => {
+            if (currentPage < comicPages.length - 1) {
+                currentPage++;
+                loadPage(currentPage);
+            }
+        });
+
+        // Inicjalizacja
+        loadPage(0);
+    </script>
+</body>
+</html>
